@@ -31,3 +31,6 @@ XLNet (large-uncased)	| 94.6	| 94.7	| 94.6	| 94.6
 RoBERTa (base-uncased) + textattack	|**94.3**	|**94.3**	|**94.3**	|**94.3**
 ALBERT (base-uncased) + textattack	|92.0	|92.0|	92.0	|92.0
 XLNet (base-uncased) + textattack	|93.7	|93.8	|93.7	|93.7
+
+## LICENSE
+Please reference [MIT License Copyright (c) 2020 YJiangcm](https://github.com/YJiangcm/Movielens1M-Movie-Recommendation-System/blob/main/LICENSE)
