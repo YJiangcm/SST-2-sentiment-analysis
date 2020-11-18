@@ -33,4 +33,4 @@ ALBERT (base-uncased) + textattack	|92.0	|92.0|	92.0	|92.0
 XLNet (base-uncased) + textattack	|93.7	|93.8	|93.7	|93.7
 
 ## LICENSE
-Please reference [MIT License Copyright (c) 2020 YJiangcm](https://github.com/YJiangcm/Movielens1M-Movie-Recommendation-System/blob/main/LICENSE)
+Please refer to [MIT License Copyright (c) 2020 YJiangcm](https://github.com/YJiangcm/Movielens1M-Movie-Recommendation-System/blob/main/LICENSE)
