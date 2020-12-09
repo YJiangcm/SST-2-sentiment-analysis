@@ -2,7 +2,7 @@
 
 Use BiLSTM_attention, BERT, RoBERTa, XLNet and ALBERT models to classify the SST-2 data set based on pytorch.
 
-These codes are recommended to  run in **Google Colab**.
+These codes are recommended to  run in **Google Colab**, where  you may use free GPU resources.
 
 ## 1. Experiment results of BiLSTM_attention models on test set:
 The **BiLSTM_attention model** can let us know which words in a sentence do contributions to the sentiment of this sentence. The code is avalibale in "bilstm_attention.ipynb",  where **two types of self-attention mechanism** have been achieved. You can run it in Google Colab for practice. The visualization result is shown below:
