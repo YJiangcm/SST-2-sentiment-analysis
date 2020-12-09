@@ -10,7 +10,7 @@ The **BiLSTM_attention model** can let us know which words in a sentence do cont
 <img src="https://github.com/YJiangcm/Movielens1M-Movie-Recommendation-System/blob/main/pictures/attention%E5%8F%AF%E8%A7%86%E5%8C%962.PNG" width="800" height="300">
 
 ## 2. Experiment results of BERT models on test set:
-
+For specific BERT models, you can find them from https://huggingface.co/models and then do modify in "Models.py".
 ### 2.1 base model
  Model | Accuracy | Precision	| Recall | F1
  ---- | -----  |----- |----- |----- 
