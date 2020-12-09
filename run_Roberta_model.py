@@ -17,11 +17,13 @@ from utils import train, validate, test
 from models import RobertModel
 
 def model_train_validate_test(train_df, dev_df, test_df, target_dir, 
+         max_seq_len=50,
          epochs=3,
          batch_size=32,
          lr=2e-05,
          patience=1,
          max_grad_norm=10.0,
+         if_save_model=True,
          checkpoint=None):
     """
     Parameters
@@ -30,11 +32,13 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
     dev_df : pandas dataframe of dev set.
     test_df : pandas dataframe of test set.
     target_dir : the path where you want to save model.
+    max_seq_len: the max truncated length.
     epochs : the default is 3.
     batch_size : the default is 32.
     lr : learning rate, the default is 2e-05.
     patience : the default is 1.
     max_grad_norm : the default is 10.0.
+    if_save_model: if save the trained model to the target dir.
     checkpoint : the default is None.
 
     """
@@ -50,15 +54,15 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
     # -------------------- Data loading --------------------------------------#
     
     print("\t* Loading training data...")
-    train_data = DataPrecessForSentence(tokenizer, train_df)
+    train_data = DataPrecessForSentence(tokenizer, train_df, max_seq_len = max_seq_len)
     train_loader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
 
     print("\t* Loading validation data...")
-    dev_data = DataPrecessForSentence(tokenizer,dev_df)
+    dev_data = DataPrecessForSentence(tokenizer,dev_df, max_seq_len = max_seq_len)
     dev_loader = DataLoader(dev_data, shuffle=True, batch_size=batch_size)
     
     print("\t* Loading test data...")
-    test_data = DataPrecessForSentence(tokenizer,test_df) 
+    test_data = DataPrecessForSentence(tokenizer,test_df, max_seq_len = max_seq_len) 
     test_loader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
     
     # -------------------- Model definition ------------------- --------------#
@@ -149,19 +153,20 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
         else:
             best_score = epoch_accuracy
             patience_counter = 0
-            torch.save({"epoch": epoch, 
-                        "model": model.state_dict(),
-                        "optimizer": optimizer.state_dict(),
-                        "best_score": best_score,
-                        "epochs_count": epochs_count,
-                        "train_losses": train_losses,
-                        "train_accuracy": train_accuracies,
-                        "valid_losses": valid_losses,
-                        "valid_accuracy": valid_accuracies,
-                        "valid_auc": valid_aucs
-                        },
-                        os.path.join(target_dir, "best.pth.tar"))
-            print("save model succesfully!\n")
+            if (if_save_model):
+                  torch.save({"epoch": epoch, 
+                           "model": model.state_dict(),
+                           "optimizer": optimizer.state_dict(),
+                           "best_score": best_score,
+                           "epochs_count": epochs_count,
+                           "train_losses": train_losses,
+                           "train_accuracy": train_accuracies,
+                           "valid_losses": valid_losses,
+                           "valid_accuracy": valid_accuracies,
+                           "valid_auc": valid_aucs
+                           },
+                           os.path.join(target_dir, "best.pth.tar"))
+                  print("save model succesfully!\n")
             
             # run model on test set and save the prediction result to csv
             print("* Test for epoch {}:".format(epoch))
@@ -178,7 +183,7 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
             break
 
 
-def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_name, batch_size=32):
+def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_name, max_seq_len=50, batch_size=32):
     """
     Parameters
     ----------
@@ -186,6 +191,7 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
     target_dir : the path of pretrained model.
     test_prediction_dir : the path that you want to save the prediction result to.
     test_prediction_name : the file name of the prediction result.
+    max_seq_len: the max truncated length.
     batch_size : the default is 32.
     
     """
@@ -200,7 +206,7 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
         checkpoint = torch.load(os.path.join(target_dir, "best.pth.tar"), map_location=device)
         
     print("\t* Loading test data...")    
-    test_data = DataPrecessForSentence(tokenizer,test_df) 
+    test_data = DataPrecessForSentence(tokenizer,test_df, max_seq_len = max_seq_len) 
     test_loader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
 
     # Retrieving model parameters from checkpoint.
@@ -222,8 +228,9 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
 
 
 if __name__ == "__main__":
-    train_df = pd.read_csv("/content/drive/My Drive/SST-2/data/train.tsv",sep='\t',header=None, names=['similarity','s1'])
-    dev_df = pd.read_csv("/content/drive/My Drive/SST-2/data/dev.tsv",sep='\t',header=None, names=['similarity','s1'])
-    test_df = pd.read_csv("/content/drive/My Drive/SST-2/data/test.tsv",sep='\t',header=None, names=['similarity','s1'])
-    target_dir = "/content/drive/My Drive/LCQMC/output/Roberta/"
+    data_path = "/content/drive/My Drive/SST-2-sentiment-analysis/data/"
+    train_df = pd.read_csv(os.path.join(data_path,"train.tsv"),sep='\t',header=None, names=['similarity','s1'])
+    dev_df = pd.read_csv(os.path.join(data_path,"dev.tsv"),sep='\t',header=None, names=['similarity','s1'])
+    test_df = pd.read_csv(os.path.join(data_path,"test.tsv"),sep='\t',header=None, names=['similarity','s1'])
+    target_dir = "/content/drive/My Drive/SST-2-sentiment-analysis/output/Roberta/"
     model_train_validate_test(train_df, dev_df, test_df, target_dir)
